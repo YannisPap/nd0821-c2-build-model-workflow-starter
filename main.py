@@ -1,10 +1,9 @@
 import json
-
-import mlflow
-import tempfile
 import os
-import wandb
+import tempfile
+
 import hydra
+import mlflow
 from omegaconf import DictConfig
 
 _steps = [
@@ -111,12 +110,17 @@ def go(config: DictConfig):
             )
 
         if "test_regression_model" in active_steps:
-
-            ##################
-            # Implement here #
-            ##################
-
-            pass
+            mlflow.run(
+                uri=os.path.join(
+                    hydra.utils.get_original_cwd(),
+                    "components",
+                    "test_regression_model",
+                ),
+                parameters={
+                    "mlflow_model": "random_forest_export:prod",
+                    "test_dataset": "test_data.csv:latest",
+                },
+            )
 
 
 if __name__ == "__main__":
