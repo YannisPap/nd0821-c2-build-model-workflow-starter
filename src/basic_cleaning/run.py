@@ -29,7 +29,11 @@ def go(args):
 
     logger.info("Removing outliers based on price")
     df = pd.read_csv(filepath_or_buffer=artifact_local_path)
-    df = df.loc[(df["price"] >= args.min_price) & (df["price"] <= args.max_price)]
+    df = df.loc[
+        df["price"].between(left=args.min_price, right=args.max_price)
+        & df["longitude"].between(left=-74.25, right=-73.50)
+        & df["latitude"].between(left=40.5, right=41.2)
+    ]
 
     file_path = Path("artifacts", "processed_data.csv")
     df.to_csv(file_path, index=False)
